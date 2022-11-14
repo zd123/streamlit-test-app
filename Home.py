@@ -14,7 +14,7 @@ col1, col2, col3 = st.columns([1,1,1])
 
 with col1:
     st.image('images/covid-icon.png')
-    st.write('<a href="/Covid"> Check out my Covid Dashboard</a>', unsafe_allow_html=True)
+    st.write('<a href="/covid"> Check out my Covid Dashboard</a>', unsafe_allow_html=True)
     
     #st.markdown ('[![Foo](http://www.google.com.au/images/nav_logo7.png)](http://google.com.au/)')
     link_to_covid_page = ''
@@ -27,7 +27,7 @@ with col1:
 
 with col2:
     st.image('images/covid-map.png')
-    st.write('<a href="/Map"> Check out my Interactive Map</a>', unsafe_allow_html=True)    
+    st.write('<a href="/map"> Check out my Interactive Map</a>', unsafe_allow_html=True)    
     
     st.image('images/github.png')
     st.write('<a href="https://github.com/zd123"> View more awesome code on my github.</a>', unsafe_allow_html=True)    
