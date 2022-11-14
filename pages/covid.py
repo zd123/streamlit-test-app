@@ -3,10 +3,15 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import json
+import datetime
 
 
-#https://github.com/nytimes/covid-19-data/tree/master/rolling-averages
 st.set_page_config(layout="wide")
+
+
+st.header("Covid Dashboard")
+#https://github.com/nytimes/covid-19-data/tree/master/rolling-averages
+
 
 col0 = st.columns([1])[0]
 
@@ -14,19 +19,47 @@ col0 = st.columns([1])[0]
 col1, col2, col3 = st.columns([1,1,4])
 
 
+@st.cache
 def load_data(fp):
-    return pd.read_csv(fp)
+    print('Running load_data...')
+    return(pd.read_csv(fp))
 
+
+@st.cache
+def load_covid_data(fp):
+    print('Running load_covid_data...')
+
+    # read in the csv via the link
+    df = pd.read_csv(fp)
+
+    # Creating the National Average
+    national_average = df.groupby('date')['cases_avg_per_100k'].mean()
+
+    # turn that into a data frame
+    national_average = pd.DataFrame(national_average).reset_index()
+
+    # create a state column
+    national_average['state'] = 'National Average'
+
+    # add it to the main dataframe
+    df = df.append(national_average)
+
+    df['datetime'] = pd.to_datetime(df['date'])
+
+    return(df)
+
+
+@st.cache
 def load_geos(fp):
+    print('Running load_geos...')
     with open(fp) as response:
         counties = json.load(response)
     return counties
 
 
 # loading the data
-
-df = load_data('data/us-states-national-average.csv') 
-df_counties = load_data('data/us-counties-recent.csv')
+fp = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/rolling-averages/us-states.csv'
+df = load_covid_data(fp) 
 
 
 with col0:
@@ -48,13 +81,23 @@ with col3:
         )
 
 
-
     # for debugging
     print(type(selected_states), selected_states)
 
 
     # extract just the selected states
     state_df = df[df['state'].isin(selected_states)].copy()
+
+
+    # create summary stats from selected_states dataframe
+    summary_stats = state_df.groupby('state')['cases_avg_per_100k'].agg(['mean', 'median', 'min', 'max', 'std'])
+
+    # This should work but doesn't     
+    summary_stats.index = summary_stats.index.rename('Avg Cases Per 100k')
+
+    # display the summary stats table
+    st.write('Avg Cases Per 100k', summary_stats)
+
 
     # create line chart with just selected states
     fig = px.line(state_df, 
@@ -76,12 +119,33 @@ with col3:
     fig.update_xaxes(showgrid=False, gridwidth=1, gridcolor='Gray')
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='Gray')
 
-    
-    # create summary stats from selected_states dataframe
-    summary_stats = state_df.groupby('state')['cases_avg_per_100k'].agg(['mean', 'median', 'min', 'max', 'std'])
-    
-    summary_stats.index = summary_stats.index.rename('Avg Cases Per 100k')
-    st.write('Avg Cases Per 100k', summary_stats)
+    # display graph
+    st.plotly_chart(fig, use_container_width=True)
+
+
+
+    # create line chart of just last 90 days.
+    today = datetime.datetime.now()
+    d = datetime.timedelta(days = 50)
+    last_90 = today - d
+
+    df_last_ninety_days =  state_df[state_df['datetime'] > last_90]
+    fig = px.line(df_last_ninety_days, 
+        x='date', 
+        y='cases_avg_per_100k', 
+        line_group='state', 
+        color='state',
+        title="Last 90 Days:  Average # of cases per 100k people.",
+        labels={ "cases_avg_per_100k": "Cases per 100k"} 
+        )
+    # changest the background color
+    fig.update_layout({
+        'plot_bgcolor': 'rgba(0, 0, 0, 0)',
+        'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+        })
+        
+    fig.update_xaxes(showgrid=False, gridwidth=1, gridcolor='Gray')
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='Gray')    
     st.plotly_chart(fig, use_container_width=True)
 
 
