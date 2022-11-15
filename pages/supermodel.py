@@ -24,7 +24,7 @@ st.balloons()
 report = pull()
 
 st.dataframe(
-	report.style.highlight_max(axis=0, color='yellow'),
+	report.style.highlight_max(axis=0, color='red'),
 	use_container_width=True
 	)
 	
