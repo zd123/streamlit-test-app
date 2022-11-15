@@ -10,19 +10,6 @@ st.set_page_config(layout="wide")
 
 
 st.header("Covid Dashboard")
-#https://github.com/nytimes/covid-19-data/tree/master/rolling-averages
-
-
-col0 = st.columns([1])[0]
-
-# -- Create three columns
-col1, col2, col3 = st.columns([1,1,4])
-
-
-@st.cache
-def load_data(fp):
-    print('Running load_data...')
-    return(pd.read_csv(fp))
 
 
 @st.cache
@@ -49,27 +36,19 @@ def load_covid_data(fp):
     return(df)
 
 
-@st.cache
-def load_geos(fp):
-    print('Running load_geos...')
-    with open(fp) as response:
-        counties = json.load(response)
-    return counties
-
-
 # loading the data
 fp = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/rolling-averages/us-states.csv'
 df = load_covid_data(fp) 
 
 
-with col0:
-    st.header('Welcome to my covid dashborad.')
+# -- Create two columns
+col1, col2 = st.columns([1,4])
 
 with col1:
     st.write('Average number of cases per 100k compared to the national average.')
 
 
-with col3:
+with col2:
     # create a list of all the state names
     state_list = sorted(df['state'].unique())
     
@@ -109,7 +88,7 @@ with col3:
         labels={ "cases_avg_per_100k": "Cases per 100k"} 
         )
 
-    # changest the background color
+    # changes the background color
     fig.update_layout({
         'plot_bgcolor': 'rgba(0, 0, 0, 0)',
         'paper_bgcolor': 'rgba(0, 0, 0, 0)',
@@ -143,13 +122,19 @@ with col3:
         'plot_bgcolor': 'rgba(0, 0, 0, 0)',
         'paper_bgcolor': 'rgba(0, 0, 0, 0)',
         })
-        
+    
+    # changing the grid axes
     fig.update_xaxes(showgrid=False, gridwidth=1, gridcolor='Gray')
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='Gray')    
+
+    # display the chart.
     st.plotly_chart(fig, use_container_width=True)
 
 
+# inside column 1
 with col1:
+
+    # for each state in selected states
     for state in selected_states:
         if state != 'National Average':
             avg = df[df['state'] == state]['cases_avg_per_100k'].mean()

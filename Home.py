@@ -8,8 +8,11 @@ st.set_page_config(
     page_icon="👋",
 )
 
-st.write("# Welcome to my homepage! 👋")
+# Create a page header
+st.header("Welcome to my homepage! 👋")
 
+
+# Create three columns 
 col1, col2, col3 = st.columns([1,1,1])
 
 with col1:

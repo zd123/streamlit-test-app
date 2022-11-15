@@ -4,23 +4,31 @@ import pickle
 import plotly.express as px
 
 
+
+# Load the model you already created...
 model = pickle.load(open('models/model.pkl', 'rb'))
 
+
+# Begin user inputs
+
+# Get fare
 fare = st.slider('Select passenger fare', 0, 99)
 
+# Get pclass
 pclass = st.radio('Pick passenger pClass they were in', ['1', '2', '3'])
 
+
+# Get Sex
 sex_male = st.radio('Pick passenger sex', ['Male', 'Female'])
 
+
+
+
+# Button to start prediction, Once make_prediction button is clicked...
 make_prediction = st.button('Submit and make prediction.')
 
-# This is from the create_model script just so I remember what order
-# to feed the variables into the model.
-selected_features = ['fare', 'pclass_2', 'pclass_3', 'sex_male']
 
-# Once make_prediction button is clicked...
-# Run below.  
-
+# Once make_prediction button is clicked... the code below will run. 
 if make_prediction:
 	if pclass == '1':
 		# Remember pclass == 0 when pclass_2 and pclass_3 are both 0.
@@ -59,25 +67,17 @@ if make_prediction:
 	# also get the predicted probability 
 	if value == 0:
 		pred_output = 'Death'
-		pred_proba = prediction_proba[0][0].round(2)
+		pred_proba = prediction_proba[0][0].round(2) * 100
 	else:
 		pred_output = 'Survival'
-		pred_proba = prediction_proba[0][1].round(2)
+		pred_proba = prediction_proba[0][1].round(2) * 100
 
 	# Generate output text
-	output_text = '''## Predicted  **%s chance of %s** \n\n based on the input of %s''' % (pred_proba, pred_output, str(to_predict))
+	output_text = '## Predicted a ' + '%' + '**%s chance of %s** \n\n based on the input of %s' % (pred_proba, pred_output, str(to_predict))
 
 	# Display the users input variables back to them.
 	st.markdown(output_text)
 	st.markdown('Fare='+str(fare))
 	st.markdown('Sex='+sex_male)
 	st.markdown('Pclass='+str(pclass))
-
-
-
-df = pd.read_csv('data/titanic.csv')
-plotting_df = df[['fare', 'pclass', 'age', 'survived']]
-fig = px.scatter_matrix(plotting_df, color='survived')
-
-st.plotly_chart(fig)
-
+	st.balloons()
