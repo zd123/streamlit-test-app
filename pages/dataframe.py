@@ -5,7 +5,6 @@ import plotly.express as px
 import json
 
 
-@st.cache
 def load_covid_data(fp):
     print('Running load_covid_data...')
 

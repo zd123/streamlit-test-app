@@ -12,7 +12,6 @@ st.set_page_config(layout="wide")
 st.header("Covid Dashboard")
 
 
-@st.cache
 def load_covid_data(fp):
     print('Running load_covid_data...')
 

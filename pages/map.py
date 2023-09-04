@@ -15,7 +15,7 @@ def strip_fips(input_string):
         return(00000)
 
 
-@st.cache
+
 def load_geos(fp):
     print('Running load_geos function...')
     with open(fp) as response:
@@ -24,7 +24,7 @@ def load_geos(fp):
 
 
 
-@st.cache
+
 def load_counties(fp):
     print('Running load_counties function...')
     df = pd.read_csv(fp)
