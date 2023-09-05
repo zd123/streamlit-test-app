@@ -6,7 +6,7 @@ You need to install two new libraries...
 
 
 # Materials
-### [Link to app](https://zd123-streamlit-test-app-home-uq8qo8.streamlit.app/) that we will be reviewing in class.
+### [Link to app](https://ctp-example-app.streamlit.app/) that we will be reviewing in class.
 
 ### [Link to the github repo](https://github.com/zd123/streamlit-test-app) of that app. 
 
