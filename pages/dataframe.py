@@ -4,7 +4,7 @@ import numpy as np
 import plotly.express as px
 import json
 
-
+@st.cache_data
 def load_covid_data(fp):
     print('Running load_covid_data...')
 

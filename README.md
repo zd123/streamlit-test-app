@@ -2,7 +2,6 @@
 
 You need to install two new libraries...
 * `pip install streamlit`
-* `pip install pycaret`
 
 
 # Materials
